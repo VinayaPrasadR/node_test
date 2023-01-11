@@ -1,9 +1,1 @@
 runtime: nodejs18
-
-
-handlers:
-- url: /authorize
-  script: auto
-
-- url: /callback
-  script: auto
