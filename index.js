@@ -1,45 +1,50 @@
 const {google} = require('googleapis');
 const express = require('express');
+const {OAuth2Client} = require('google-auth-library');
 
 
 const app = express();
 const PORT=process.env.PORT || 8000
 
-const oauth2Client = new google.auth.OAuth2(
+  const oAuth2Client = new OAuth2Client(
     "794602203764-l4p5vpnlqrt9pmsdhocbbqfvjlgrbfmc.apps.googleusercontent.com",
-    "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",
-    'https://indus-373613.el.r.appspot.com/callback'
-  );
+   "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",
+   'http://127.0.0.1:8000/callback'
+);
 
-function getGoogleAuthURL() {
+  function getAuthenticatedClient() {
+    return new Promise((resolve, reject) => {
 
-    const scopes = [
-        'https://www.googleapis.com/auth/gmail.readonly'
+      const scopes = [
+        'https://www.googleapis.com/auth/gmail.readonly',
+        'https://www.googleapis.com/auth/userinfo.profile'
+
     ];
 
-    return oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      prompt: 'consent',
-      scope: scopes
-    });
-  }
-
+      const authorizeUrl = oAuth2Client.generateAuthUrl({
+        access_type: 'offline',
+        scope: scopes
+      });
+        
+         resolve(authorizeUrl)
+    })}
 
 
  app.get("/authorize", (req, res) => {
-    res.redirect(getGoogleAuthURL());
+
+    getAuthenticatedClient().then((authorizeUrl)=>res.redirect(authorizeUrl))
   });
   
 
 app.get("/callback",async(req,res)=>{
 
    
-    if(req.query.error) return res.redirect(getGoogleAuthURL());
+    if(req.query.error) 
+     return getAuthenticatedClient().then((authorizeUrl)=>res.redirect(authorizeUrl))
 
     const code = req.query.code
-    console.log(code)
-    const tokens  = await oauth2Client.getToken(code)
-    res.send(tokens)
+    const tokens = await oAuth2Client.getToken(code);
+    res.status(200).send("Thankyou for the permission....You can return back to the app");
 });
 
 
