@@ -14,8 +14,6 @@ const oAuth2Client = new OAuth2Client(
 );
 
 
-
-
 const scopes = [
 
   'https://www.googleapis.com/auth/userinfo.profile',
@@ -79,22 +77,4 @@ const PORT=process.env.PORT || 8000
 
 
 
-  //code for getting the email and user id of user
-
-  //axios({method:'GET',url:`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${tokens.tokens.access_token}`}).then((response)=>{
-        
-        //let array = response.data.scope.split(' ');
-        //console.log(tokens.tokens.scope)
-        /*if(JSON.stringify(array2) === JSON.stringify(scopes))
-        {
-            return res.send(tokens)
-  }})*/
-
-// test client id and local running code
-
-/*const oAuth2Client = new OAuth2Client(
-  `794602203764-l4p5vpnlqrt9pmsdhocbbqfvjlgrbfmc.apps.googleusercontent.com`,
- `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`,
- 'http://127.0.0.1:8000/callback'
-);
-*/
+  
