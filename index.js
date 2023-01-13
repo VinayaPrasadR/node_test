@@ -2,15 +2,19 @@ const {google} = require('googleapis');
 const express = require('express');
 const {OAuth2Client} = require('google-auth-library');
 const axios = require('axios')
-
+const secret=require('./config')
 const app = express();
-const PORT=process.env.PORT || 8000
+
+
 
 const oAuth2Client = new OAuth2Client(
-    "794602203764-l4p5vpnlqrt9pmsdhocbbqfvjlgrbfmc.apps.googleusercontent.com",
-   "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",
-   'http://127.0.0.1:8000/callback'
+  `${secret.clientId}`,
+ `${secret.clientSecret}`,
+  'https://indus-373613.el.r.appspot.com/callback'
 );
+
+
+
 
 const scopes = [
 
@@ -32,6 +36,9 @@ function getAuthenticatedClient() {
          resolve(authorizeUrl)
     })}
 
+
+
+
  app.get("/authorize", (req, res) => {
 
     getAuthenticatedClient().then((authorizeUrl)=>res.redirect(authorizeUrl))
@@ -46,26 +53,48 @@ app.get("/callback",async(req,res)=>{
 
     const code = req.query.code
     const tokens = await oAuth2Client.getToken(code);
-    //axios({method:'GET',url:`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${tokens.tokens.access_token}`}).then((response)=>{
+    let array2=tokens.tokens.scope.split(' ')
+
+    if(array2.length === scopes.length && array2.every(elem => scopes.includes(elem)))
+         return res.send(tokens)
+     else 
+         return getAuthenticatedClient().then((authorizeUrl)=>res.redirect(authorizeUrl))
+          
+    
+});
+
+
+const PORT=process.env.PORT || 8000
+
+  app.listen(PORT, () => {
+    console.log(`App listening http://localhost:${PORT}`);
+  });
+
+
+
+
+
+
+
+
+
+
+  //code for getting the email and user id of user
+
+  //axios({method:'GET',url:`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${tokens.tokens.access_token}`}).then((response)=>{
         
         //let array = response.data.scope.split(' ');
         //console.log(tokens.tokens.scope)
         /*if(JSON.stringify(array2) === JSON.stringify(scopes))
         {
             return res.send(tokens)
-        }})*/
-        let array2=tokens.tokens.scope.split(' ')
-        if(array2.length === scopes.length && array2.every(elem => scopes.includes(elem)))
-           return res.send(tokens)
-        else 
-           return getAuthenticatedClient().then((authorizeUrl)=>res.redirect(authorizeUrl))
-          
-    
-});
+  }})*/
 
+// test client id and local running code
 
-
-
-  app.listen(PORT, () => {
-    console.log(`App listening http://localhost:${PORT}`);
-  });
+/*const oAuth2Client = new OAuth2Client(
+  `794602203764-l4p5vpnlqrt9pmsdhocbbqfvjlgrbfmc.apps.googleusercontent.com`,
+ `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`,
+ 'http://127.0.0.1:8000/callback'
+);
+*/
