@@ -2,7 +2,7 @@ const {google} = require('googleapis');
 const express = require('express');
 const {OAuth2Client} = require('google-auth-library');
 const axios = require('axios')
-const secret=require('./config')
+const secret=require('./secrets')
 const app = express();
 
 
