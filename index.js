@@ -5,13 +5,23 @@ const axios = require('axios')
 const secret=require('./secrets')
 const app = express();
 
+let client_id;
+let client_secret;
+let oAuth2Client;
 
 
-const oAuth2Client = new OAuth2Client(
-  `${secret.clientId}`,
- `${secret.clientSecret}`,
-  'https://indus-373613.el.r.appspot.com/callback'
-);
+
+secret.clientId().then((data1)=>{
+  client_id = `${data1}`;
+  secret.clientSecret().then((data2)=>{
+    client_secret = `${data2}`;
+    oAuth2Client = new OAuth2Client(
+      client_id,
+      client_secret,
+      'https://indus-373613.el.r.appspot.com/callback'
+    );
+  });
+});
 
 
 const scopes = [
